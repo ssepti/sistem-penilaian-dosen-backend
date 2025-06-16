@@ -33,17 +33,34 @@ class Login extends ResourceController
         if(!$verify) return $this->fail('Wrong Password');
 
         $key = getenv('TOKEN_SECRET');
-        $payload = array(
-            "iat" => 1356999524,
-            "nbf" => 1357000000,
-            "uid" => $user['id'],
-            "email" => $user['email']
-        );
+        // Tentukan role berdasarkan domain email
+$role = 'guest'; // default
+
+if (strpos($user['email'], '@stu.ac.id') !== false) {
+    $role = 'mahasiswa';
+} elseif (strpos($user['email'], '@dosen.ac.id') !== false) {
+    $role = 'dosen';
+} elseif (strpos($user['email'], '@admin.ac.id') !== false) {
+    $role = 'admin';
+}
+
+$payload = array(
+    "iat" => time(),
+    "nbf" => time(),
+    "uid" => $user['id'],
+    "email" => $user['email'],
+    "role" => $role
+);
+
 
         $token = JWT::encode($payload, $key, 'HS256');
 
 
-        return $this->respond($token);
+        return $this->respond([
+    'token' => $token,
+    'role'  => $role
+]);
+
 
     }
 

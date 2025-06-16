@@ -19,6 +19,10 @@ class Users extends Migration
                 'constraint' => 50,
                 'unique'     => true,  // Username harus unik
             ],
+            'role' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 255,  // Panjang untuk menyimpan hash password
+            ],
             'password' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 255,  // Panjang untuk menyimpan hash password

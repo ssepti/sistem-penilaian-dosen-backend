@@ -2,152 +2,135 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
 use App\Models\PenilaianModel;
+use CodeIgniter\RESTful\ResourceController;
 use CodeIgniter\HTTP\ResponseInterface;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
-class Penilaian extends BaseController
+class Penilaian extends ResourceController
 {
     public function index()
     {
-    
         $model = new PenilaianModel();
-        $data = $model->getPenilaian(); // ambil semua data dari tabel mahasiswa
-
-        return $this->response->setJSON($data); // tampilkan dalam bentuk JSON
-
+        $data = $model->getPenilaian(); // custom method jika kamu pakai join
+        return $this->respond($data);
     }
+
     public function create()
     {
-        $model = new PenilaianModel();
-
-        // Ambil data yang dikirimkan melalui POST
-        $data = [
-            'id_prodi'      => $this->request->getVar('id_prodi'),
-            'id_dosen'      => $this->request->getVar('id_dosen'),
-            'sks'           => $this->request->getVar('sks'),
-            'aspek_nilai'   => $this->request->getVar('aspek_nilai'),
-            'saran'         => $this->request->getVar('saran'),
-        ];
-
-        // Validasi input
-        if (empty($data['id_prodi']) || empty($data['id_dosen']) || empty($data['sks']) || empty($data['aspek_nilai'])) {
-            return $this->response->setJSON([
-                'status'  => 400,
-                'message' => 'Semua kolom harus diisi'
-            ])->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+        $role = $this->getUserRole();
+        if ($role !== 'mahasiswa') {
+            return $this->failForbidden('Hanya mahasiswa yang bisa menambahkan penilaian');
         }
 
-        // Masukkan data ke database
+        $data = $this->request->getJSON(true); // ambil input sebagai array
+
+        if (
+            empty($data['id_prodi']) ||
+            empty($data['id_dosen']) ||
+            empty($data['sks']) ||
+            empty($data['aspek_nilai'])
+        ) {
+            return $this->fail('Semua kolom harus diisi');
+        }
+
+        $model = new PenilaianModel();
         if ($model->insert($data)) {
-            return $this->response->setJSON([
-                'status'  => 201,
+            return $this->respondCreated([
                 'message' => 'Data penilaian berhasil ditambahkan',
-                'data'    => $data
-            ])->setStatusCode(ResponseInterface::HTTP_CREATED);
+                'data' => $data
+            ]);
         } else {
-            return $this->response->setJSON([
-                'status'  => 400,
-                'message' => 'Gagal menambahkan data penilaian'
-            ])->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+            return $this->fail('Gagal menambahkan data penilaian');
         }
     }
-    public function update($id)
+
+    public function update($id = null)
     {
+        $role = $this->getUserRole();
+        if ($role !== 'mahasiswa') {
+            return $this->failForbidden('Hanya mahasiswa yang bisa mengubah penilaian');
+        }
+
+        $data = $this->request->getJSON(true); // ambil sebagai array
+
+        if (
+            empty($data['id_prodi']) ||
+            empty($data['id_dosen']) ||
+            empty($data['sks']) ||
+            empty($data['aspek_nilai'])
+        ) {
+            return $this->fail('Semua kolom harus diisi');
+        }
+
         $model = new PenilaianModel();
-        $json = $this->request->getJSON();
-
-        // Siapkan data untuk update
-        $data = [
-            'id_prodi'      => $json->id_prodi,
-            'id_dosen'      => $json->id_dosen,
-            'sks'           => $json->sks,
-            'aspek_nilai'   => $json->aspek_nilai,
-            'saran'         => $json->saran,
-        ];
-
-        // Validasi input
-        if (empty($data['id_prodi']) || empty($data['id_dosen']) || empty($data['sks']) || empty($data['aspek_nilai'])) {
-            return $this->response->setJSON([
-                'status'  => 400,
-                'message' => 'Semua kolom harus diisi'
-            ])->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+        if (!$model->find($id)) {
+            return $this->failNotFound('Penilaian tidak ditemukan');
         }
 
-        // Cek apakah data penilaian ada di database
-        $penilaian = $model->find($id);
-        if (!$penilaian) {
-            return $this->response->setJSON([
-                'status'  => 404,
-                'message' => 'Penilaian tidak ditemukan'
-            ])->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
-        }
-
-        // Update data penilaian
         if ($model->update($id, $data)) {
-            return $this->response->setJSON([
-                'status'  => 200,
+            return $this->respond([
                 'message' => 'Data penilaian berhasil diupdate',
-                'data'    => $data
-            ])->setStatusCode(ResponseInterface::HTTP_OK);
+                'data' => $data
+            ]);
         } else {
-            return $this->response->setJSON([
-                'status'  => 500,
-                'message' => 'Gagal update data penilaian'
-            ])->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->fail('Gagal mengupdate data');
         }
     }
 
     public function delete($id = null)
-{
-    $model = new \App\Models\PenilaianModel();
+    {
+        $model = new PenilaianModel();
+        if (!$model->find($id)) {
+            return $this->failNotFound('Data penilaian tidak ditemukan');
+        }
 
-    // Cek apakah data penilaian dengan ID tersebut ada
-    $penilaian = $model->find($id);
-    if (!$penilaian) {
-        return $this->response->setJSON([
-            'status'  => 404,
-            'message' => 'Data penilaian tidak ditemukan'
-        ])->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+        if ($model->delete($id)) {
+            return $this->respondDeleted([
+                'message' => 'Data penilaian berhasil dihapus'
+            ]);
+        } else {
+            return $this->fail('Gagal menghapus data');
+        }
     }
-
-    // Hapus data
-    if ($model->delete($id)) {
-        return $this->response->setJSON([
-            'status'  => 200,
-            'message' => 'Data penilaian berhasil dihapus'
-        ])->setStatusCode(ResponseInterface::HTTP_OK);
-    } else {
-        return $this->response->setJSON([
-            'status'  => 400,
-            'message' => 'Gagal menghapus data penilaian'
-        ])->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
-    }
-}
 
     public function show($id = null)
-{
-    $model = new PenilaianModel();
-    $data = $model->find($id);
+    {
+        $model = new PenilaianModel();
+        $data = $model->find($id);
+        if ($data) {
+            return $this->respond($data);
+        } else {
+            return $this->failNotFound('Data penilaian tidak ditemukan');
+        }
+    }
 
-    if ($data) {
-        return $this->response->setJSON([
-            'status' => 200,
-            'message' => 'Data penilaian ditemukan',
-            'data' => $data
-        ])->setStatusCode(ResponseInterface::HTTP_OK);
-    } else {
-        return $this->response->setJSON([
-            'status' => 404,
-            'message' => 'Data penilaian tidak ditemukan'
-        ])->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+    public function getAll()
+    {
+        $model = new PenilaianModel();
+        $data = $model->findAll();
+        return $this->respond($data);
+    }
+
+    private function getUserRole()
+    {
+        $authHeader = $this->request->getHeader("Authorization");
+        if (!$authHeader) return null;
+
+        try {
+            $token = explode(' ', $authHeader->getValue())[1]; // Bearer <token>
+            $key = getenv('TOKEN_SECRET');
+            $decoded = JWT::decode($token, new Key($key, 'HS256'));
+
+            // Deteksi role berdasarkan email
+            if (isset($decoded->email) && strpos($decoded->email, '@stu.ac.id') !== false) {
+                return 'mahasiswa';
+            }
+
+            return 'admin'; // fallback
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }
-public function getAll()
-{
-    $model = new \App\Models\PenilaianModel();
-    $data = $model->findAll();
-    return $this->response->setJSON($data);
-}
-}
-
