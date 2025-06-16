@@ -115,4 +115,38 @@ class Dosen extends BaseController
         return $this->response->setJSON($response)->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
     }
 }
+public function show($id = null)
+{
+    $model = new DosenModel();
+    $data = $model->find($id);
+
+    if ($data) {
+        // Ambil nama prodi
+        $prodiModel = new \App\Models\ProdiModel();
+        $prodi = $prodiModel->find($data['id_prodi']);
+        $data['nama_prodi'] = $prodi ? $prodi['nama_prodi'] : '';
+
+        // Ambil nama matkul
+        $matkulModel = new \App\Models\MatkulModel();
+        $matkul = $matkulModel->find($data['id_matkul']);
+        $data['nama_matkul'] = $matkul ? $matkul['nama_matkul'] : '';
+
+        return $this->response->setJSON([
+            'status' => 200,
+            'message' => 'Data dosen ditemukan',
+            'data' => $data
+        ])->setStatusCode(ResponseInterface::HTTP_OK);
+    } else {
+        return $this->response->setJSON([
+            'status' => 404,
+            'message' => 'Data dosen tidak ditemukan'
+        ])->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+    }
+}
+public function getAll()
+{
+    $model = new \App\Models\DosenModel();
+    $data = $model->findAll();
+    return $this->response->setJSON($data);
+}
 }

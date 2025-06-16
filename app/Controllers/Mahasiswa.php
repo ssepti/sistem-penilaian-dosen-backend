@@ -107,4 +107,30 @@ public function delete($id = null)
         return $this->response->setJSON($response)->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
     }
 }
+public function show($id = null)
+{
+    $model = new MahasiswaModel();
+    $data = $model->find($id);
+
+    if ($data) {
+        // Ambil nama prodi juga
+        $prodiModel = new \App\Models\ProdiModel();
+        $prodi = $prodiModel->find($data['id_prodi']);
+        $data['nama_prodi'] = $prodi ? $prodi['nama_prodi'] : null;
+
+        return $this->respond([
+            'status' => 200,
+            'message' => 'Data mahasiswa ditemukan',
+            'data' => $data
+        ]);
+    } else {
+        return $this->failNotFound('Data mahasiswa tidak ditemukan');
+    }
+}
+public function getAll()
+{
+    $model = new \App\Models\MahasiswaModel();
+    $data = $model->findAll();
+    return $this->response->setJSON($data);
+}
 }

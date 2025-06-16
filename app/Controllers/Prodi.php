@@ -82,7 +82,30 @@ public function delete($id = null)
     }
 }
 
+public function show($id = null)
+{
+    $model = new ProdiModel();
+    $data = $model->find($id);
 
+    if ($data) {
+        return $this->response->setJSON([
+            'status' => 200,
+            'message' => 'Data prodi ditemukan',
+            'data' => $data
+        ])->setStatusCode(ResponseInterface::HTTP_OK);
+    } else {
+        return $this->response->setJSON([
+            'status' => 404,
+            'message' => 'Data prodi tidak ditemukan'
+        ])->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+    }
+}
+public function getAll()
+{
+    $model = new \App\Models\ProdiModel();
+    $data = $model->findAll();
+    return $this->response->setJSON($data);
+}
 
 }
 

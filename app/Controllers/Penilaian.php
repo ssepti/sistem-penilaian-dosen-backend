@@ -97,5 +97,57 @@ class Penilaian extends BaseController
             ])->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function delete($id = null)
+{
+    $model = new \App\Models\PenilaianModel();
+
+    // Cek apakah data penilaian dengan ID tersebut ada
+    $penilaian = $model->find($id);
+    if (!$penilaian) {
+        return $this->response->setJSON([
+            'status'  => 404,
+            'message' => 'Data penilaian tidak ditemukan'
+        ])->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+    }
+
+    // Hapus data
+    if ($model->delete($id)) {
+        return $this->response->setJSON([
+            'status'  => 200,
+            'message' => 'Data penilaian berhasil dihapus'
+        ])->setStatusCode(ResponseInterface::HTTP_OK);
+    } else {
+        return $this->response->setJSON([
+            'status'  => 400,
+            'message' => 'Gagal menghapus data penilaian'
+        ])->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+    }
+}
+
+    public function show($id = null)
+{
+    $model = new PenilaianModel();
+    $data = $model->find($id);
+
+    if ($data) {
+        return $this->response->setJSON([
+            'status' => 200,
+            'message' => 'Data penilaian ditemukan',
+            'data' => $data
+        ])->setStatusCode(ResponseInterface::HTTP_OK);
+    } else {
+        return $this->response->setJSON([
+            'status' => 404,
+            'message' => 'Data penilaian tidak ditemukan'
+        ])->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+    }
+}
+public function getAll()
+{
+    $model = new \App\Models\PenilaianModel();
+    $data = $model->findAll();
+    return $this->response->setJSON($data);
+}
 }
 
