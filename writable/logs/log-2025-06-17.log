@@ -1,0 +1,74 @@
+ERROR - 2025-06-17 13:50:17 --> mysqli_sql_exception: Cannot add or update a child row: a foreign key constraint fails (`edom`.`penilaian`, CONSTRAINT `penilaian_id_prodi_foreign` FOREIGN KEY (`id_prodi`) REFERENCES `prodi` (`id_prodi`) ON DELETE CASCADE ON UPDATE CASCADE) in C:\laragon\www\sistem_penilaian_dosen - Copy (2) - Copy\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\laragon\www\sistem_penilaian_dosen - Copy (2) - Copy\system\Database\MySQLi\Connection.php(327): mysqli->query('UPDATE `penilai...', 0)
+#1 C:\laragon\www\sistem_penilaian_dosen - Copy (2) - Copy\system\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('UPDATE `penilai...')
+#2 C:\laragon\www\sistem_penilaian_dosen - Copy (2) - Copy\system\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('UPDATE `penilai...')
+#3 C:\laragon\www\sistem_penilaian_dosen - Copy (2) - Copy\system\Database\BaseBuilder.php(2521): CodeIgniter\Database\BaseConnection->query('UPDATE `penilai...', Array, false)
+#4 C:\laragon\www\sistem_penilaian_dosen - Copy (2) - Copy\system\Model.php(461): CodeIgniter\Database\BaseBuilder->update()
+#5 C:\laragon\www\sistem_penilaian_dosen - Copy (2) - Copy\system\BaseModel.php(1027): CodeIgniter\Model->doUpdate(Array, Array)
+#6 C:\laragon\www\sistem_penilaian_dosen - Copy (2) - Copy\system\Model.php(863): CodeIgniter\BaseModel->update(Array, Array)
+#7 C:\laragon\www\sistem_penilaian_dosen - Copy (2) - Copy\app\Controllers\Penilaian.php(89): CodeIgniter\Model->update('5', Array)
+#8 C:\laragon\www\sistem_penilaian_dosen - Copy (2) - Copy\system\CodeIgniter.php(933): App\Controllers\Penilaian->update('5')
+#9 C:\laragon\www\sistem_penilaian_dosen - Copy (2) - Copy\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Penilaian))
+#10 C:\laragon\www\sistem_penilaian_dosen - Copy (2) - Copy\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 C:\laragon\www\sistem_penilaian_dosen - Copy (2) - Copy\system\Boot.php(334): CodeIgniter\CodeIgniter->run()
+#12 C:\laragon\www\sistem_penilaian_dosen - Copy (2) - Copy\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 C:\laragon\www\sistem_penilaian_dosen - Copy (2) - Copy\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 C:\laragon\www\sistem_penilaian_dosen - Copy (2) - Copy\system\rewrite.php(44): require_once('C:\\laragon\\www\\...')
+#15 {main}
+CRITICAL - 2025-06-17 13:50:17 --> CodeIgniter\Database\Exceptions\DatabaseException: Cannot add or update a child row: a foreign key constraint fails (`edom`.`penilaian`, CONSTRAINT `penilaian_id_prodi_foreign` FOREIGN KEY (`id_prodi`) REFERENCES `prodi` (`id_prodi`) ON DELETE CASCADE ON UPDATE CASCADE)
+[Method: PUT, Route: api/penilaian/update/5]
+in SYSTEMPATH\Database\BaseConnection.php on line 692.
+ 1 SYSTEMPATH\Database\BaseBuilder.php(2521): CodeIgniter\Database\BaseConnection->query('UPDATE `penilaian` SET `id_prodi` = :id_prodi:, `id_dosen` = :id_dosen:, `sks` = :sks:, `aspek_nilai` = :aspek_nilai:, `saran` = :saran:, `status` = :status:
+WHERE `penilaian`.`id_penilaian` IN :penilaian.id_penilaian:', [...], false)
+ 2 SYSTEMPATH\Model.php(461): CodeIgniter\Database\BaseBuilder->update()
+ 3 SYSTEMPATH\BaseModel.php(1027): CodeIgniter\Model->doUpdate([...], [...])
+ 4 SYSTEMPATH\Model.php(863): CodeIgniter\BaseModel->update([...], [...])
+ 5 APPPATH\Controllers\Penilaian.php(89): CodeIgniter\Model->update('5', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Penilaian->update('5')
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Penilaian))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\rewrite.php(44): require_once('C:\\laragon\\www\\sistem_penilaian_dosen - Copy (2) - Copy\\public\\index.php')
+CRITICAL - 2025-06-17 13:50:17 --> [Caused by] CodeIgniter\Database\Exceptions\DatabaseException: Cannot add or update a child row: a foreign key constraint fails (`edom`.`penilaian`, CONSTRAINT `penilaian_id_prodi_foreign` FOREIGN KEY (`id_prodi`) REFERENCES `prodi` (`id_prodi`) ON DELETE CASCADE ON UPDATE CASCADE)
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 332.
+ 1 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('UPDATE `penilaian` SET `id_prodi` = 2, `id_dosen` = 3, `sks` = 3, `aspek_nilai` = \'4\', `saran` = \'Penjelasan cukup jelas.\', `status` = \'Sudah Diisi\'
+WHERE `penilaian`.`id_penilaian` IN (\'5\')')
+ 2 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('UPDATE `penilaian` SET `id_prodi` = 2, `id_dosen` = 3, `sks` = 3, `aspek_nilai` = \'4\', `saran` = \'Penjelasan cukup jelas.\', `status` = \'Sudah Diisi\'
+WHERE `penilaian`.`id_penilaian` IN (\'5\')')
+ 3 SYSTEMPATH\Database\BaseBuilder.php(2521): CodeIgniter\Database\BaseConnection->query('UPDATE `penilaian` SET `id_prodi` = :id_prodi:, `id_dosen` = :id_dosen:, `sks` = :sks:, `aspek_nilai` = :aspek_nilai:, `saran` = :saran:, `status` = :status:
+WHERE `penilaian`.`id_penilaian` IN :penilaian.id_penilaian:', [...], false)
+ 4 SYSTEMPATH\Model.php(461): CodeIgniter\Database\BaseBuilder->update()
+ 5 SYSTEMPATH\BaseModel.php(1027): CodeIgniter\Model->doUpdate([...], [...])
+ 6 SYSTEMPATH\Model.php(863): CodeIgniter\BaseModel->update([...], [...])
+ 7 APPPATH\Controllers\Penilaian.php(89): CodeIgniter\Model->update('5', [...])
+ 8 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Penilaian->update('5')
+ 9 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Penilaian))
+10 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+11 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+12 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+13 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+14 SYSTEMPATH\rewrite.php(44): require_once('C:\\laragon\\www\\sistem_penilaian_dosen - Copy (2) - Copy\\public\\index.php')
+CRITICAL - 2025-06-17 13:50:17 --> [Caused by] mysqli_sql_exception: Cannot add or update a child row: a foreign key constraint fails (`edom`.`penilaian`, CONSTRAINT `penilaian_id_prodi_foreign` FOREIGN KEY (`id_prodi`) REFERENCES `prodi` (`id_prodi`) ON DELETE CASCADE ON UPDATE CASCADE)
+in SYSTEMPATH\Database\MySQLi\Connection.php on line 327.
+ 1 SYSTEMPATH\Database\MySQLi\Connection.php(327): mysqli->query('UPDATE `penilaian` SET `id_prodi` = 2, `id_dosen` = 3, `sks` = 3, `aspek_nilai` = \'4\', `saran` = \'Penjelasan cukup jelas.\', `status` = \'Sudah Diisi\'
+WHERE `penilaian`.`id_penilaian` IN (\'5\')', 0)
+ 2 SYSTEMPATH\Database\BaseConnection.php(738): CodeIgniter\Database\MySQLi\Connection->execute('UPDATE `penilaian` SET `id_prodi` = 2, `id_dosen` = 3, `sks` = 3, `aspek_nilai` = \'4\', `saran` = \'Penjelasan cukup jelas.\', `status` = \'Sudah Diisi\'
+WHERE `penilaian`.`id_penilaian` IN (\'5\')')
+ 3 SYSTEMPATH\Database\BaseConnection.php(652): CodeIgniter\Database\BaseConnection->simpleQuery('UPDATE `penilaian` SET `id_prodi` = 2, `id_dosen` = 3, `sks` = 3, `aspek_nilai` = \'4\', `saran` = \'Penjelasan cukup jelas.\', `status` = \'Sudah Diisi\'
+WHERE `penilaian`.`id_penilaian` IN (\'5\')')
+ 4 SYSTEMPATH\Database\BaseBuilder.php(2521): CodeIgniter\Database\BaseConnection->query('UPDATE `penilaian` SET `id_prodi` = :id_prodi:, `id_dosen` = :id_dosen:, `sks` = :sks:, `aspek_nilai` = :aspek_nilai:, `saran` = :saran:, `status` = :status:
+WHERE `penilaian`.`id_penilaian` IN :penilaian.id_penilaian:', [...], false)
+ 5 SYSTEMPATH\Model.php(461): CodeIgniter\Database\BaseBuilder->update()
+ 6 SYSTEMPATH\BaseModel.php(1027): CodeIgniter\Model->doUpdate([...], [...])
+ 7 SYSTEMPATH\Model.php(863): CodeIgniter\BaseModel->update([...], [...])
+ 8 APPPATH\Controllers\Penilaian.php(89): CodeIgniter\Model->update('5', [...])
+ 9 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Penilaian->update('5')
+10 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Penilaian))
+11 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+12 SYSTEMPATH\Boot.php(334): CodeIgniter\CodeIgniter->run()
+13 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+14 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+15 SYSTEMPATH\rewrite.php(44): require_once('C:\\laragon\\www\\sistem_penilaian_dosen - Copy (2) - Copy\\public\\index.php')

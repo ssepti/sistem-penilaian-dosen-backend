@@ -18,85 +18,88 @@ class Penilaian extends BaseController
 
     }
     public function create()
-    {
-        $model = new PenilaianModel();
+{
+    $model = new PenilaianModel();
 
-        // Ambil data yang dikirimkan melalui POST
-        $data = [
-            'id_prodi'      => $this->request->getVar('id_prodi'),
-            'id_dosen'      => $this->request->getVar('id_dosen'),
-            'sks'           => $this->request->getVar('sks'),
-            'aspek_nilai'   => $this->request->getVar('aspek_nilai'),
-            'saran'         => $this->request->getVar('saran'),
-        ];
+    // Ambil data dari request
+    $data = [
+        'id_prodi'      => $this->request->getVar('id_prodi'),
+        'id_dosen'      => $this->request->getVar('id_dosen'),
+        'sks'           => $this->request->getVar('sks'),
+        'aspek_nilai'   => $this->request->getVar('aspek_nilai'),
+        'saran'         => $this->request->getVar('saran'),
+        // 'status' di-skip, karena default di database = "Belum Diisi"
+    ];
 
-        // Validasi input
-        if (empty($data['id_prodi']) || empty($data['id_dosen']) || empty($data['sks']) || empty($data['aspek_nilai'])) {
-            return $this->response->setJSON([
-                'status'  => 400,
-                'message' => 'Semua kolom harus diisi'
-            ])->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
-        }
-
-        // Masukkan data ke database
-        if ($model->insert($data)) {
-            return $this->response->setJSON([
-                'status'  => 201,
-                'message' => 'Data penilaian berhasil ditambahkan',
-                'data'    => $data
-            ])->setStatusCode(ResponseInterface::HTTP_CREATED);
-        } else {
-            return $this->response->setJSON([
-                'status'  => 400,
-                'message' => 'Gagal menambahkan data penilaian'
-            ])->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
-        }
+    // Validasi
+    if (empty($data['id_prodi']) || empty($data['id_dosen']) || empty($data['sks']) || empty($data['aspek_nilai'])) {
+        return $this->response->setJSON([
+            'status'  => 400,
+            'message' => 'Semua kolom wajib diisi'
+        ])->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
     }
+
+    if ($model->insert($data)) {
+        return $this->response->setJSON([
+            'status'  => 201,
+            'message' => 'Penilaian berhasil ditambahkan',
+            'data'    => $data
+        ])->setStatusCode(ResponseInterface::HTTP_CREATED);
+    } else {
+        return $this->response->setJSON([
+            'status'  => 400,
+            'message' => 'Gagal menambahkan penilaian'
+        ])->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+    }
+}
+
     public function update($id)
-    {
-        $model = new PenilaianModel();
-        $json = $this->request->getJSON();
+{
+    $model = new PenilaianModel();
+    $json = $this->request->getJSON();
 
-        // Siapkan data untuk update
-        $data = [
-            'id_prodi'      => $json->id_prodi,
-            'id_dosen'      => $json->id_dosen,
-            'sks'           => $json->sks,
-            'aspek_nilai'   => $json->aspek_nilai,
-            'saran'         => $json->saran,
-        ];
+    // Siapkan data untuk update
+    $data = [
+        'id_prodi'      => $json->id_prodi,
+        'id_dosen'      => $json->id_dosen,
+        'sks'           => $json->sks,
+        'aspek_nilai'   => $json->aspek_nilai,
+        'saran'         => $json->saran,
+        'status'        => 'Sudah Diisi' // status diubah saat update
+    ];
 
-        // Validasi input
-        if (empty($data['id_prodi']) || empty($data['id_dosen']) || empty($data['sks']) || empty($data['aspek_nilai'])) {
-            return $this->response->setJSON([
-                'status'  => 400,
-                'message' => 'Semua kolom harus diisi'
-            ])->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
-        }
-
-        // Cek apakah data penilaian ada di database
-        $penilaian = $model->find($id);
-        if (!$penilaian) {
-            return $this->response->setJSON([
-                'status'  => 404,
-                'message' => 'Penilaian tidak ditemukan'
-            ])->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
-        }
-
-        // Update data penilaian
-        if ($model->update($id, $data)) {
-            return $this->response->setJSON([
-                'status'  => 200,
-                'message' => 'Data penilaian berhasil diupdate',
-                'data'    => $data
-            ])->setStatusCode(ResponseInterface::HTTP_OK);
-        } else {
-            return $this->response->setJSON([
-                'status'  => 500,
-                'message' => 'Gagal update data penilaian'
-            ])->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
-        }
+    // Validasi input
+    if (empty($data['id_prodi']) || empty($data['id_dosen']) || empty($data['sks']) || empty($data['aspek_nilai'])) {
+        return $this->response->setJSON([
+            'status'  => 400,
+            'message' => 'Semua kolom harus diisi'
+        ])->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
     }
+
+    // Cek apakah data penilaian ada
+    $penilaian = $model->find($id);
+    if (!$penilaian) {
+        return $this->response->setJSON([
+            'status'  => 404,
+            'message' => 'Penilaian tidak ditemukan'
+        ])->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+    }
+
+    // Update data
+    if ($model->update($id, $data)) {
+        return $this->response->setJSON([
+            'status'  => 200,
+            'message' => 'Penilaian berhasil diperbarui',
+            'data'    => $data
+        ])->setStatusCode(ResponseInterface::HTTP_OK);
+    } else {
+        return $this->response->setJSON([
+            'status'  => 500,
+            'message' => 'Gagal memperbarui data penilaian'
+        ])->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
+    }
+}
+
 
     public function delete($id = null)
 {
@@ -161,5 +164,21 @@ private function getUserRole()
 
     return $decoded->role ?? null;
 }
+public function penilaianBelumDiisi()
+{
+    $model = new PenilaianModel();
+    $data = $model->where('status', 'Belum Diisi')->findAll();
+
+    return $this->response->setJSON($data);
+}
+
+public function riwayatPenilaian()
+{
+    $model = new PenilaianModel();
+    $data = $model->where('status', 'Sudah Diisi')->findAll();
+
+    return $this->response->setJSON($data);
+}
+
 
 }

@@ -12,7 +12,7 @@ class PenilaianModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_prodi', 'id_dosen', 'sks', 'aspek_nilai', 'saran'];
+    protected $allowedFields    = ['id_prodi', 'id_dosen', 'sks', 'aspek_nilai', 'saran', 'status'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
