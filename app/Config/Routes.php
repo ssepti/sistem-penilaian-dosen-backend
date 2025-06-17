@@ -18,6 +18,11 @@ $routes->get('/api/matkul', 'Matkul::index');
 $routes->get('/api/admin', 'Admin::index');
 $routes->get('/api/penilaian', 'Penilaian::index');
 
+//penilaian
+$routes->get('/api/penilaian/belum-diisi', 'Penilaian::penilaianBelumDiisi');
+$routes->get('/api/penilaian/riwayat', 'Penilaian::riwayatPenilaian');
+
+
 //Get BY ID-Show
 $routes->get('/api/mahasiswa/(:num)', 'Mahasiswa::show/$1');
 $routes->get('api/prodi/(:num)', 'Prodi::show/$1');
