@@ -61,12 +61,16 @@ class LoginModel extends Model
      */
     public function updateRememberValidator(string $selector, string $validator)
     {
-        return $this->db->table('auth_tokens')
-            ->where('selector', $selector)
-            ->update([
-                'hashedValidator' => hash('sha256', $validator),
-                'expires'         => (new DateTime())->modify('+' . config('Auth')->rememberLength . ' seconds')->format('Y-m-d H:i:s'),
-            ]);
+        /** @var \Config\Auth $authConfig */
+$authConfig = config('Auth');
+
+return $this->db->table('auth_tokens')
+    ->where('selector', $selector)
+    ->update([
+        'hashedValidator' => hash('sha256', $validator),
+        'expires'         => (new DateTime())->modify('+' . $authConfig->rememberLength . ' seconds')->format('Y-m-d H:i:s'),
+    ]);
+
     }
 
     /**
@@ -88,9 +92,13 @@ class LoginModel extends Model
     {
         $config = config('Auth');
 
-        if (! $config->allowRemembering) {
-            return;
-        }
+        /** @var \Config\Auth $config */
+$config = config('Auth');
+
+if (! $config->allowRemembering) {
+    return;
+}
+
 
         $this->db->table('auth_tokens')
             ->where('expires <=', date('Y-m-d H:i:s'))
