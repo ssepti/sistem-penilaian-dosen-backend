@@ -53,7 +53,7 @@ class Register extends ResourceController
             $role = 'mahasiswa';
         } elseif (strpos($data['email'], '@dosen.ac.id') !== false) {
             $role = 'dosen';
-        } else {
+        } elseif (strpos($data['email'], '@admin.ac.id') !== false) {
             $role = 'admin';
         }
 
