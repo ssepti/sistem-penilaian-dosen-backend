@@ -28,7 +28,7 @@ class Mahasiswa extends BaseController
     
         $data = [
             'npm' => $json->npm,
-            'password' => $json->password,
+            'email' => $json->email,
             'nama_mhs' => $json->nama_mhs,
             'kelas' => $json->kelas,
             'id_prodi' => $json->id_prodi,
@@ -70,7 +70,7 @@ class Mahasiswa extends BaseController
     // Data yang ingin diupdate
     $data = [
         'nama_mhs' => $json->nama_mhs,
-        'password' => password_hash($json->password, PASSWORD_DEFAULT),  // Meng-hash password
+        'email' => $json->email,
         'kelas' => $json->kelas,
         'id_prodi' => $json->id_prodi
     ];

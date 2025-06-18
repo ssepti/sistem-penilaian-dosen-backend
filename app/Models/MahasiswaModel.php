@@ -12,7 +12,7 @@ class MahasiswaModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['npm', 'password', 'nama_mhs', 'kelas', 'id_prodi'];
+    protected $allowedFields    = ['npm', 'email', 'nama_mhs', 'kelas', 'id_prodi'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -47,7 +47,7 @@ class MahasiswaModel extends Model
     public function getMahasiswa()
     {
         return $this->db->table($this->table)
-            ->select('mahasiswa.id_mhs, mahasiswa.npm, mahasiswa.password, mahasiswa.nama_mhs, mahasiswa.kelas, prodi.nama_prodi')
+            ->select('mahasiswa.id_mhs, mahasiswa.npm, mahasiswa.email, mahasiswa.nama_mhs, mahasiswa.kelas, prodi.nama_prodi')
             ->join('prodi', 'prodi.id_prodi = mahasiswa.id_prodi')
             ->get()
             ->getResultArray();

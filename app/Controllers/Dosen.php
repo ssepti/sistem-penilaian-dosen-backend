@@ -26,6 +26,7 @@ class Dosen extends BaseController
             'nama_dosen' => $json->nama_dosen,
             'nidn' => $json->nidn,
             'id_prodi' => $json->id_prodi,
+            'email' => $json->email,
             'id_matkul' => $json->id_matkul,
         ];
     
@@ -72,11 +73,12 @@ class Dosen extends BaseController
             'nama_dosen'   => $json->nama_dosen,
             'nidn'         => $json->nidn,
             'id_prodi'     => $json->id_prodi,
+            'email'     => $json->email,
             'id_matkul'    => $json->id_matkul,
         ];
 
         // Validasi input (misalnya, bisa ditambahkan validasi disini)
-        if (empty($data['nama_dosen']) || empty($data['nidn']) || empty($data['id_prodi']) || empty($data['id_matkul'])) {
+        if (empty($data['nama_dosen']) || empty($data['nidn']) || empty($data['id_prodi']) || empty($data['id_matkul']) || empty($data['email'])) {
             return $this->response->setJSON([
                 'status'  => 400,
                 'message' => 'Semua kolom harus diisi'

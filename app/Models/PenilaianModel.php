@@ -52,6 +52,7 @@ class PenilaianModel extends Model
                 prodi.nama_prodi, dosen.nama_dosen, mata_kuliah.nama_matkul')
         ->join('prodi', 'prodi.id_prodi = penilaian.id_prodi', 'left')
         ->join('dosen', 'dosen.id_dosen = penilaian.id_dosen', 'left')
+        ->join('mata_kuliah', 'mata_kuliah.id_matkul = penilaian.id_matkul', 'left')
         ->get()
         ->getResultArray();
 }

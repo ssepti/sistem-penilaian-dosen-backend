@@ -12,7 +12,7 @@ class DosenModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['nama_dosen', 'nidn', 'id_prodi', 'id_matkul'];
+    protected $allowedFields    = ['nama_dosen', 'nidn', 'id_prodi', 'id_matkul', 'email'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -47,9 +47,10 @@ class DosenModel extends Model
     public function getDosen()
 {
     return $this->db->table('dosen')
-    ->select('dosen.id_dosen, dosen.nama_dosen, dosen.nidn, prodi.nama_prodi, mata_kuliah.nama_matkul')
+    ->select('dosen.id_dosen, dosen.nama_dosen, dosen.nidn, dosen.email, prodi.nama_prodi, mata_kuliah.nama_matkul')
     ->join('prodi', 'prodi.id_prodi = dosen.id_prodi', 'left')
     ->join('mata_kuliah', 'mata_kuliah.id_matkul = dosen.id_matkul', 'left')
+    ->join('users', 'users.email = dosen.email', 'left')
     ->get()
     ->getResultArray();
 

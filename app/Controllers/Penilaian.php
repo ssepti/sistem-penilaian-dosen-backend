@@ -26,6 +26,7 @@ class Penilaian extends BaseController
         'id_mahasiswa'  => $user->id_mahasiswa,
         'id_prodi'      => $this->request->getVar('id_prodi'),
         'id_dosen'      => $this->request->getVar('id_dosen'),
+        'id_matkul'      => $this->request->getVar('id_matkul'),
         'sks'           => $this->request->getVar('sks'),
         'aspek_nilai'   => $this->request->getVar('aspek_nilai'),
         'saran'         => $this->request->getVar('saran'),
