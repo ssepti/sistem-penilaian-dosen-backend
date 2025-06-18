@@ -22,6 +22,12 @@ $routes->get('/api/penilaian', 'Penilaian::index');
 $routes->get('/api/penilaian/belum-diisi', 'Penilaian::penilaianBelumDiisi');
 $routes->get('/api/penilaian/riwayat', 'Penilaian::riwayatPenilaian');
 
+//prodi
+$routes->get('api/dosen/prodi', 'Dosen::getDosenByProdi');
+
+//get profil mahasiswa
+$routes->get('api/mahasiswa/getprofil', 'Mahasiswa::getProfil');
+
 
 //Get BY ID-Show
 $routes->get('/api/mahasiswa/(:num)', 'Mahasiswa::show/$1');
@@ -48,11 +54,12 @@ $routes->post('/api/dosen/create', 'Dosen::create');
 $routes->post('/api/penilaian/create', 'Penilaian::create');
 $routes->post('/api/admin/create', 'Admin::create');
 
-
+//Login
 $routes->post('register', 'Register::index');
 $routes->post('login', 'Login::index');
 $routes->get('login', 'Login::index');
 
+//Update
 $routes->put('/api/prodi/update/(:num)', 'Prodi::update/$1');
 $routes->put('/api/mahasiswa/update/(:num)', 'Mahasiswa::update/$1');
 $routes->put('/api/matkul/update/(:num)', 'Matkul::update/$1');
@@ -60,7 +67,7 @@ $routes->put('/api/dosen/update/(:num)', 'Dosen::update/$1');
 $routes->put('/api/admin/update/(:num)', 'Admin::update/$1');
 $routes->put('/api/penilaian/update/(:num)', 'Penilaian::update/$1');
 
-
+//Hapus
 $routes->delete('/api/prodi/delete/(:num)', 'Prodi::delete/$1');
 $routes->delete('/api/mahasiswa/delete/(:num)', 'Mahasiswa::delete/$1');
 $routes->delete('/api/matkul/delete/(:num)', 'Matkul::delete/$1');

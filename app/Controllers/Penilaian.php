@@ -19,20 +19,32 @@ class Penilaian extends BaseController
     }
     public function create()
 {
+    $user = $this->getUser();
     $model = new PenilaianModel();
 
-    // Ambil data dari request
     $data = [
+        'id_mahasiswa'  => $user->id_mahasiswa,
         'id_prodi'      => $this->request->getVar('id_prodi'),
         'id_dosen'      => $this->request->getVar('id_dosen'),
         'sks'           => $this->request->getVar('sks'),
         'aspek_nilai'   => $this->request->getVar('aspek_nilai'),
         'saran'         => $this->request->getVar('saran'),
-        // 'status' di-skip, karena default di database = "Belum Diisi"
+        'status'        => 'Belum Diisi'
     ];
 
+    $cek = $model->where('id_mahasiswa', $user->id_mahasiswa)
+             ->where('id_dosen', $this->request->getVar('id_dosen'))
+             ->first();
+
+        if ($cek) {
+    return $this->response->setJSON([
+        'status' => 409,
+        'message' => 'Penilaian untuk dosen ini sudah pernah diisi'
+    ])->setStatusCode(409);
+    }
+
     // Validasi
-    if (empty($data['id_prodi']) || empty($data['id_dosen']) || empty($data['sks']) || empty($data['aspek_nilai'])) {
+    if (empty($data['id_prodi']) || empty($data['id_dosen']) || empty($data['id_matkul']) || empty($data['sks']) || empty($data['aspek_nilai'])) {
         return $this->response->setJSON([
             'status'  => 400,
             'message' => 'Semua kolom wajib diisi'
@@ -51,6 +63,7 @@ class Penilaian extends BaseController
             'message' => 'Gagal menambahkan penilaian'
         ])->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
     }
+
 }
 
     public function update($id)
@@ -62,6 +75,7 @@ class Penilaian extends BaseController
     $data = [
         'id_prodi'      => $json->id_prodi,
         'id_dosen'      => $json->id_dosen,
+        'id_matkul'      => $json->id_matkul,
         'sks'           => $json->sks,
         'aspek_nilai'   => $json->aspek_nilai,
         'saran'         => $json->saran,
@@ -153,17 +167,22 @@ public function getAll()
     return $this->response->setJSON($data);
 }
 
-private function getUserRole()
+private function getUser()
 {
     $authHeader = $this->request->getHeader("Authorization");
     if (!$authHeader) return null;
 
     $token = explode(' ', $authHeader->getValue())[1]; // Bearer xxx
     $key = getenv('TOKEN_SECRET');
-    $decoded = \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key($key, 'HS256'));
 
-    return $decoded->role ?? null;
+    try {
+        $decoded = \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key($key, 'HS256'));
+        return $decoded;
+    } catch (\Exception $e) {
+        return null;
+    }
 }
+
 public function penilaianBelumDiisi()
 {
     $model = new PenilaianModel();
@@ -179,6 +198,17 @@ public function riwayatPenilaian()
 
     return $this->response->setJSON($data);
 }
+public function getDosenByProdi()
+{
+    $user = $this->getUser(); // dari token JWT
+    $idProdi = $user->id_prodi;
+
+    $dosenModel = new \App\Models\DosenModel();
+    $data = $dosenModel->where('id_prodi', $idProdi)->findAll();
+
+    return $this->response->setJSON($data);
+}
+
 
 
 }

@@ -133,4 +133,36 @@ public function getAll()
     $data = $model->findAll();
     return $this->response->setJSON($data);
 }
+private function getUser()
+{
+    $authHeader = $this->request->getHeader("Authorization");
+    if (!$authHeader) return null;
+
+    $token = explode(' ', $authHeader->getValue())[1]; // Bearer <token>
+    $key = getenv('TOKEN_SECRET');
+
+    return \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key($key, 'HS256'));
+}
+public function getProfil()
+{
+    $user = $this->getUser(); // Ambil data user dari token
+    $email = $user->email;
+
+    $mahasiswaModel = new \App\Models\MahasiswaModel();
+    $mahasiswa = $mahasiswaModel->where('email', $email)->first();
+
+    if ($mahasiswa) {
+        return $this->response->setJSON([
+            'status' => 200,
+            'message' => 'Data mahasiswa ditemukan',
+            'data' => $mahasiswa
+        ]);
+    } else {
+        return $this->response->setJSON([
+            'status' => 404,
+            'message' => 'Data mahasiswa tidak ditemukan'
+        ]);
+    }
+}
+
 }
